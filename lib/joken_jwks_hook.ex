@@ -43,7 +43,7 @@ defmodule JokenJwks do
     end
   end
 
-  defp match_signer_with_token(token, signers) do
+  defp match_signer_with_token({token, _}, signers) do
     kid =
       token
       |> Joken.peek_header()
