@@ -10,18 +10,18 @@ defmodule JokenJwks do
 
       defmodule MyToken do
         use Joken.Config
-        
+
         add_hook(JokenJwks, jwks_url: "https://some-well-known-jwks-url.com")
-        
+
         # rest of your token config
       end
 
   ## Options
 
-  This hook accepts 2 types of configuration: 
+  This hook accepts 2 types of configuration:
 
-    - `app_config`: accepts an atom that should be the application that has a 
-      configuration key `joken_jwks_url`. This is a dynamic configuration. 
+    - `app_config`: accepts an atom that should be the application that has a
+      configuration key `joken_jwks_url`. This is a dynamic configuration.
     - `jwks_url`: the fixed URL for the JWKS. This is a static configuration.
 
   """
@@ -30,10 +30,10 @@ defmodule JokenJwks do
 
   @cache :joken_jwks_cache
 
-  @impl true
-  def before_verify(_hook_options, {:error, reason}, _token, _signer), do: {:error, reason}
+  # def before_verify(_hook_options, {:error, reason}, _token, _signer), do: {:error, reason}
 
-  def before_verify(hook_options, _status, token, _signer) do
+  @impl true
+  def before_verify(hook_options, token) do
     with {:ok, signers} <- hook_options |> fetch_jwks_url() |> fetch_signers(),
          {:ok, signer} <- match_signer_with_token(token, signers) do
       {:cont, {:ok, token, signer}}
